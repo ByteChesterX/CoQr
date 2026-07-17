@@ -2,7 +2,7 @@
 set -e
 
 INSTALL_DIR="$HOME/Projeler/qr-kod-uygulamasi"
-REPO_URL="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main"
+REPO_URL="https://raw.githubusercontent.com/ByteChesterX/CoQr/main"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
