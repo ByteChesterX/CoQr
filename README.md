@@ -12,7 +12,7 @@ Python ile yazılmış modern arayüzlü QR kod uygulaması.
 
 ## Kurulum
 
-curl -fsSL URL/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ByteChesterX/CoQr/main/install.sh | bash
 
 ## Kullanım
 
