@@ -2,7 +2,7 @@
 set -e
 
 INSTALL_DIR="$HOME/Projeler/qr-kod-uygulamasi"
-REPO_URL="https://raw.githubusercontent.com/ByteChesterX/CoQr/main"
+REPO_URL="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -63,7 +63,6 @@ install_system_deps() {
             ;;
         *)
             warn "Distro tanınamadı. Manuel kurulum gerekebilir."
-            warn "Gerekli paketler: python3, python3-tk, libzbar0"
             ;;
     esac
     log "Sistem bağımlılıkları kuruldu"
@@ -118,6 +117,28 @@ LAUNCHER
     log "Başlatıcı hazır"
 }
 
+create_desktop_file() {
+    log ".desktop dosyası oluşturuluyor..."
+    DESKTOP_DIR="$HOME/.local/share/applications"
+    mkdir -p "$DESKTOP_DIR"
+
+    cat > "$DESKTOP_DIR/qr-kod-uygulamasi.desktop" << EOF
+[Desktop Entry]
+Name=QR Kod Üretici & Okuyucu
+Comment=Modern QR kod üretme ve okuma uygulaması
+Exec=$INSTALL_DIR/venv/bin/python $INSTALL_DIR/qr_kod_app.py
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=Utility;Development;
+Keywords=qr;barcode;scanner;generator;
+StartupWMClass=QRKodApp
+EOF
+
+    update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
+    log ".desktop dosyası oluşturuldu: $DESKTOP_DIR/qr-kod-uygulamasi.desktop"
+}
+
 create_uninstaller() {
     cat > "$INSTALL_DIR/uninstall.sh" << 'UNINSTALL'
 #!/bin/bash
@@ -125,6 +146,8 @@ INSTALL_DIR="$HOME/Projeler/qr-kod-uygulamasi"
 echo "Kaldırılıyor: $INSTALL_DIR"
 rm -rf "$INSTALL_DIR"
 rm -f "$HOME/.local/bin/qr-kod"
+rm -f "$HOME/.local/share/applications/qr-kod-uygulamasi.desktop"
+update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
 echo "QR Kod uygulaması kaldırıldı."
 UNINSTALL
     chmod +x "$INSTALL_DIR/uninstall.sh"
@@ -139,8 +162,8 @@ summary() {
     echo -e "  Uygulamayı başlatmak için:"
     echo -e "  ${YELLOW}~/Projeler/qr-kod-uygulamasi/qr-kod${NC}"
     echo ""
-    echo -e "  Veya manuel:"
-    echo -e "  ${YELLOW}~/Projeler/qr-kod-uygulamasi/venv/bin/python ~/Projeler/qr-kod-uygulamasi/qr_kod_app.py${NC}"
+    echo -e "  Veya uygulama menüsünden:"
+    echo -e "  ${YELLOW}QR Kod Üretici & Okuyucu${NC}"
     echo ""
     echo -e "  Kaldırmak için:"
     echo -e "  ${YELLOW}~/Projeler/qr-kod-uygulamasi/uninstall.sh${NC}"
@@ -156,6 +179,7 @@ main() {
     install_python_deps
     download_app
     create_launcher
+    create_desktop_file
     create_uninstaller
     summary
 }
